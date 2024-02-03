@@ -12,8 +12,9 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "~/server/db";
-import { safeGetUser } from "./utils/users";
 import { isAdmin } from "~/utils/isAdmin";
+import { log } from "./utils/log";
+import { safeGetUser } from "./utils/users";
 
 /**
  * 1. CONTEXT
@@ -77,16 +78,71 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+
+const withLogging =
+  <
+    Args extends {
+      ctx: { userId: string | null };
+      type: "query" | "mutation" | "subscription";
+      path: string;
+      rawInput: unknown;
+    },
+    Result extends { ok: true } | { ok: false; error: Error }
+  >(
+    fn: (args: Args) => Promise<Result>
+  ) =>
+  async (args: Args) => {
+    const start = Date.now();
+    const result = await fn(args);
+    const duration = Date.now() - start;
+    const userId = args.ctx.userId === null ? "UNKNOWN_USER" : args.ctx.userId;
+
+    const additionalData = {
+      type: args.type,
+      path: args.path,
+      input: args.rawInput,
+      duration,
+    };
+
+    if (result.ok) {
+      log({
+        level: "INFO",
+        message: "Successfully resolved request",
+        userId,
+        additionalData,
+      });
+    } else {
+      log({
+        level: "ERROR",
+        message: "Error while resolving request",
+        userId,
+        additionalData: {
+          ...additionalData,
+          error: {
+            cause: result.error.cause,
+            message: result.error.message,
+            name: result.error.name,
+            stack: result.error.stack,
+          },
+        },
+      });
+    }
+
+    return result;
+  };
+
+const noopMiddleware = t.middleware(withLogging(async ({ next }) => next()));
+
+export const publicProcedure = t.procedure.use(noopMiddleware);
 
 const enforceCurrentUserIsAuthenticated = t.middleware(
-  async ({ ctx: { userId }, next }) => {
+  withLogging(async ({ ctx: { userId }, next }) => {
     if (userId === null || userId === undefined) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
     return next({ ctx: { userId } });
-  }
+  })
 );
 
 export const privateProcedure = t.procedure.use(
@@ -94,7 +150,7 @@ export const privateProcedure = t.procedure.use(
 );
 
 const enforceCurrentUserIsAdmin = t.middleware(
-  async ({ ctx: { userId }, next }) => {
+  withLogging(async ({ ctx: { userId }, next }) => {
     if (userId === null || userId === undefined) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
@@ -110,7 +166,7 @@ const enforceCurrentUserIsAdmin = t.middleware(
     }
 
     return next({ ctx: { userId } });
-  }
+  })
 );
 
 export const adminProcedure = t.procedure.use(enforceCurrentUserIsAdmin);
