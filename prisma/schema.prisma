@@ -8,9 +8,29 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Star {
-  id              Int       @default(autoincrement()) @id
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  name            String    @db.VarChar(255)
+model Recipe {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId String
+
+  name String
+  ingredients Ingredient[]
+  body String
+}
+
+model Ingredient {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipeId String
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  name String
+
+  @@unique([name, recipeId])
+
+  @@index([recipeId])
 }
