@@ -6,12 +6,14 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { getAuth } from "@clerk/nextjs/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
 import { db } from "~/server/db";
+import { safeGetUser } from "./utils/users";
+import { isAdmin } from "~/utils/isAdmin";
 
 /**
  * 1. CONTEXT
@@ -21,32 +23,15 @@ import { db } from "~/server/db";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-type CreateContextOptions = Record<string, never>;
-
-/**
- * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
- * it from here.
- *
- * Examples of things you may need it for:
- * - testing, so we don't have to mock Next.js' req/res
- * - tRPC's `createSSGHelpers`, where we don't have req/res
- *
- * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
- */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-  return {
-    db,
-  };
-};
-
 /**
  * This is the actual context you will use in your router. It will be used to process every request
  * that goes through your tRPC endpoint.
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+export const createTRPCContext = ({ req }: CreateNextContextOptions) => {
+  const { userId } = getAuth(req);
+  return { db, userId };
 };
 
 /**
@@ -93,3 +78,39 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+const enforceCurrentUserIsAuthenticated = t.middleware(
+  async ({ ctx: { userId }, next }) => {
+    if (userId === null || userId === undefined) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return next({ ctx: { userId } });
+  }
+);
+
+export const privateProcedure = t.procedure.use(
+  enforceCurrentUserIsAuthenticated
+);
+
+const enforceCurrentUserIsAdmin = t.middleware(
+  async ({ ctx: { userId }, next }) => {
+    if (userId === null || userId === undefined) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const user = await safeGetUser(userId);
+
+    if (user === "UNKNOWN_USER") {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    if (!isAdmin(user.privateMetadata)) {
+      throw new TRPCError({ code: "FORBIDDEN" });
+    }
+
+    return next({ ctx: { userId } });
+  }
+);
+
+export const adminProcedure = t.procedure.use(enforceCurrentUserIsAdmin);

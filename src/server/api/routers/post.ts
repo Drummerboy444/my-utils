@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -10,4 +14,10 @@ export const postRouter = createTRPCRouter({
         greeting: `Hello ${input.text}`,
       };
     }),
+
+  test: adminProcedure.query(() => {
+    return {
+      something: 123,
+    };
+  }),
 });
