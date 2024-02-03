@@ -1,4 +1,5 @@
 import { UserButton, useUser } from "@clerk/nextjs";
+import { Flex, Text, Button } from "@radix-ui/themes";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -19,6 +20,11 @@ export default function Home() {
           </div>
         );
       })}
+      <Flex direction="column" gap="2">
+        <Text>Hello from Radix Themes :)</Text>
+        <Button>{"Let's go"}</Button>
+      </Flex>
+      <a href="https://www.google.com">test</a>
     </main>
   );
 }
