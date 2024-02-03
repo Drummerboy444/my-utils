@@ -13,6 +13,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@axiomhq/js": "^1.0.0-rc.1",
     "@clerk/nextjs": "^4.29.5",
     "@planetscale/database": "^1.11.0",
     "@prisma/client": "^5.6.0",
