@@ -1,4 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Switch, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { type AppType } from "next/app";
@@ -11,7 +12,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   return (
-    <ClerkProvider {...pageProps}>
+    <ClerkProvider
+      {...pageProps}
+      {...(isDarkMode ? { appearance: { baseTheme: dark } } : {})}
+    >
       <Theme appearance={isDarkMode ? "dark" : "light"}>
         <Head>
           <title>My Utils</title>
