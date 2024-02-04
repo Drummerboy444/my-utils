@@ -38,4 +38,30 @@ export const recipeCollectionRouter = createTRPCRouter({
         throw error;
       }
     }),
+
+  delete: privateProcedure
+    .input(z.object({ recipeCollectionId: z.string() }))
+    .mutation(
+      async ({ ctx: { db, userId }, input: { recipeCollectionId } }) => {
+        const recipeCollection = await db.recipeCollection.findUnique({
+          where: { id: recipeCollectionId },
+        });
+
+        if (recipeCollection === null) {
+          return { type: "NO_RECIPE_COLLECTION_FOUND" as const };
+        }
+
+        const canDeleteRecipeCollection = recipeCollection.ownerId === userId;
+
+        if (!canDeleteRecipeCollection)
+          return { type: "ACCESS_DENIED" as const };
+
+        return {
+          type: "SUCCESS" as const,
+          adventure: await db.recipeCollection.delete({
+            where: { id: recipeCollectionId },
+          }),
+        };
+      }
+    ),
 });
