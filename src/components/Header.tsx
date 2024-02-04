@@ -19,13 +19,17 @@ export const Header = ({
       <Flex gap="2" align="center" px="4" py="2">
         <Flex gap="4">
           <Link href={HOME_ROUTE}>
-            <Text {...(route === HOME_ROUTE ? { color: "jade" } : {})}>
+            {/* @ts-expect-error This should set the accent colour, but the types don't line up at the moment */}
+            <Text {...(route === HOME_ROUTE ? { color: "accent" } : {})}>
               Home
             </Text>
           </Link>
           <Link href={RECIPE_COLLECTIONS_ROUTE}>
+            {/* @ts-expect-error This should set the accent colour, but the types don't line up at the moment */}
             <Text
-              {...(route === RECIPE_COLLECTIONS_ROUTE ? { color: "jade" } : {})}
+              {...(route === RECIPE_COLLECTIONS_ROUTE
+                ? { color: "accent" }
+                : {})}
             >
               Recipe collections
             </Text>
