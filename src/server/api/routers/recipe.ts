@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import { isUniqueConstraintViolation } from "../utils/db-violations";
 
 export const recipeRouter = createTRPCRouter({
   create: privateProcedure
@@ -7,10 +8,14 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         recipeCollectionId: z.string(),
         name: z.string(),
+        body: z.string().default(""),
       })
     )
     .mutation(
-      async ({ ctx: { db, userId }, input: { recipeCollectionId, name } }) => {
+      async ({
+        ctx: { db, userId },
+        input: { recipeCollectionId, name, body },
+      }) => {
         const recipeCollection = await db.recipeCollection.findUnique({
           where: { id: recipeCollectionId },
           select: { ownerId: true },
@@ -23,13 +28,24 @@ export const recipeRouter = createTRPCRouter({
 
         if (!isRecipeCollectionOwner) return { type: "ACCESS_DENIED" as const };
 
-        return db.recipe.create({
-          data: {
-            recipeCollectionId,
-            name,
-            body: "",
-          },
-        });
+        try {
+          return {
+            type: "SUCCESS" as const,
+            recipe: await db.recipe.create({
+              data: {
+                recipeCollectionId,
+                name,
+                body,
+              },
+            }),
+          };
+        } catch (error) {
+          if (isUniqueConstraintViolation(error)) {
+            return { type: "RECIPE_ALREADY_EXISTS" as const };
+          }
+
+          throw error;
+        }
       }
     ),
 });

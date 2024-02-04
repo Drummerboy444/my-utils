@@ -17,6 +17,8 @@ model RecipeCollection {
 
   name String
   recipes Recipe[]
+
+  @@unique([name, ownerId])
 }
 
 model Recipe {
