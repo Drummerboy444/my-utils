@@ -1,5 +1,6 @@
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Flex, Text, Button } from "@radix-ui/themes";
+import { Page } from "~/components/Page";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
     return <div>Loading...</div>;
 
   return (
-    <main>
+    <Page>
       <UserButton afterSignOutUrl="/" />
       {data.recipes.map((recipe) => {
         console.log(typeof recipe.name);
@@ -25,6 +26,6 @@ export default function Home() {
         <Button>{"Let's go"}</Button>
       </Flex>
       <a href="https://www.google.com">test</a>
-    </main>
+    </Page>
   );
 }
