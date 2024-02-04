@@ -2,8 +2,9 @@ import { z } from "zod";
 import { createTRPCRouter, privateProcedure } from "../trpc";
 
 export const recipeCollectionRouter = createTRPCRouter({
-  getAll: privateProcedure.query(async ({ ctx: { db } }) => {
+  getAll: privateProcedure.query(async ({ ctx: { db, userId } }) => {
     const recipeCollections = await db.recipeCollection.findMany({
+      where: { ownerId: userId },
       include: { recipes: true },
     });
     return { recipeCollections };
