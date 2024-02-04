@@ -14,3 +14,7 @@ export const log = (event: {
 }) => {
   axiom.ingest(env.AXIOM_DATASET, event);
 };
+
+export const flushLogs = async () => {
+  await axiom.flush();
+};

@@ -13,7 +13,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "~/server/db";
 import { isAdmin } from "~/utils/is-admin";
-import { log } from "./utils/log";
+import { flushLogs, log } from "./utils/log";
 import { safeGetUser } from "./utils/users";
 
 /**
@@ -127,6 +127,8 @@ const withLogging =
         },
       });
     }
+
+    await flushLogs();
 
     return result;
   };
