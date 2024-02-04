@@ -1,11 +1,14 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Box, Button, Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import { NewRecipeCollectionButton } from "~/components/NewRecipeCollectionButton";
 import { Page } from "~/components/Page";
 import { api } from "~/utils/api";
 
 export default function RecipeCollectionsPage() {
-  const { data: recipeCollectionData, isLoading: isLoadingRecipeCollections } =
-    api.recipeCollection.getAll.useQuery();
+  const {
+    data: recipeCollectionData,
+    isLoading: isLoadingRecipeCollections,
+    refetch: refetchRecipeCollections,
+  } = api.recipeCollection.getAll.useQuery();
 
   if (isLoadingRecipeCollections) return <div>Loading...</div>;
 
@@ -15,10 +18,7 @@ export default function RecipeCollectionsPage() {
     <Page>
       <Flex gap="4" direction="column" px="4">
         <Box>
-          <Button>
-            <PlusIcon />
-            New
-          </Button>
+          <NewRecipeCollectionButton refetch={refetchRecipeCollections} />
         </Box>
 
         {recipeCollectionData.recipeCollections.map((recipeCollection) => (

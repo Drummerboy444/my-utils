@@ -15,9 +15,10 @@ export const recipeCollectionRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
+        description: z.string(),
       })
     )
-    .mutation(async ({ ctx: { db, userId }, input: { name } }) => {
+    .mutation(async ({ ctx: { db, userId }, input: { name, description } }) => {
       try {
         return {
           type: "SUCCESS" as const,
@@ -25,6 +26,7 @@ export const recipeCollectionRouter = createTRPCRouter({
             data: {
               ownerId: userId,
               name,
+              description,
             },
           }),
         };
