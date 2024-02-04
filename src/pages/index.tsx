@@ -1,4 +1,4 @@
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Box, Button, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { Page } from "~/components/Page";
@@ -70,7 +70,6 @@ export default function Home() {
 
   return (
     <Page>
-      <UserButton afterSignOutUrl="/" />
       <TextField.Input
         value={newRecipeCollectionName}
         onChange={({ target: { value } }) => {
