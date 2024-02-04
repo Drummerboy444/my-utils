@@ -1,6 +1,8 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Box, Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { absurd } from "~/utils/absurd";
 import { api } from "~/utils/api";
 
 export const NewRecipeCollectionButton = ({
@@ -13,8 +15,26 @@ export const NewRecipeCollectionButton = ({
 
   const { mutate: createRecipeCollection } =
     api.recipeCollection.create.useMutation({
-      onSuccess: () => {
-        refetch();
+      onSuccess: ({ type }) => {
+        switch (type) {
+          case "SUCCESS": {
+            toast.success("Success!");
+            refetch();
+            return;
+          }
+
+          case "RECIPE_COLLECTION_ALREADY_EXISTS": {
+            toast.error("This recipe collection already exists");
+            return;
+          }
+
+          default: {
+            absurd(type);
+          }
+        }
+      },
+      onError: () => {
+        toast.error("Something went wrong, please try again later...");
       },
     });
 

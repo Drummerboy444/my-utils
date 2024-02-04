@@ -5,6 +5,7 @@ import "@radix-ui/themes/styles.css";
 import { type AppType } from "next/app";
 import Head from "next/head";
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { Header } from "~/components/Header";
 import "~/styles/globals.css";
 import { api } from "~/utils/api";
@@ -27,6 +28,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           <meta name="description" content="App containing useful utils" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            ...(isDarkMode
+              ? { style: { background: "#333", color: "#fff" } }
+              : {}),
+          }}
+        />
         <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
         <Component {...pageProps} />
       </Theme>
