@@ -8,7 +8,7 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         recipeCollectionId: z.string(),
         name: z.string(),
-        body: z.string().default(""),
+        body: z.string(),
       })
     )
     .mutation(

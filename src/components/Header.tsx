@@ -1,6 +1,8 @@
 import { UserButton } from "@clerk/nextjs";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { Flex, Separator, Switch } from "@radix-ui/themes";
+import { Box, Flex, Separator, Switch } from "@radix-ui/themes";
+import Link from "next/link";
+import { HOME_ROUTE, RECIPE_COLLECTIONS_ROUTE } from "~/utils/routing";
 
 export const Header = ({
   isDarkMode,
@@ -11,7 +13,14 @@ export const Header = ({
 }) => {
   return (
     <>
-      <Flex justify="end" gap="2" align="center" p="2">
+      <Flex gap="2" align="center" px="4" py="2">
+        <Flex gap="4">
+          <Link href={HOME_ROUTE}>Home</Link>
+          <Link href={RECIPE_COLLECTIONS_ROUTE}>Recipe collections</Link>
+        </Flex>
+
+        <Box grow="1"></Box>
+
         <SunIcon />
         <Switch
           checked={isDarkMode}

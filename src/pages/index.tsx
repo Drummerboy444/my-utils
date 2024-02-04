@@ -19,7 +19,7 @@ const CreateRecipeForm = ({
   });
 
   const createRecipeAction = (recipeCollectionId: string) => {
-    createRecipe({ recipeCollectionId, name: recipeName });
+    createRecipe({ recipeCollectionId, name: recipeName, body: "" });
     setRecipeName("");
   };
 
@@ -42,7 +42,7 @@ const CreateRecipeForm = ({
   );
 };
 
-export default function Home() {
+export default function HomePage() {
   const { isLoaded: userIsLoaded } = useUser();
 
   const {
