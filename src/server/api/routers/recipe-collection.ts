@@ -3,7 +3,9 @@ import { createTRPCRouter, privateProcedure } from "../trpc";
 
 export const recipeCollectionRouter = createTRPCRouter({
   getAll: privateProcedure.query(async ({ ctx: { db } }) => {
-    const recipeCollections = await db.recipeCollection.findMany();
+    const recipeCollections = await db.recipeCollection.findMany({
+      include: { recipes: true },
+    });
     return { recipeCollections };
   }),
 

@@ -1,8 +1,46 @@
 import { UserButton, useUser } from "@clerk/nextjs";
-import { Button, TextField } from "@radix-ui/themes";
+import { Box, Button, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { Page } from "~/components/Page";
 import { api } from "~/utils/api";
+
+const CreateRecipeForm = ({
+  recipeCollectionId,
+  refetch,
+}: {
+  recipeCollectionId: string;
+  refetch: () => void;
+}) => {
+  const [recipeName, setRecipeName] = useState("");
+  const { mutate: createRecipe } = api.recipe.create.useMutation({
+    onSuccess: () => {
+      void refetch();
+    },
+  });
+
+  const createRecipeAction = (recipeCollectionId: string) => {
+    createRecipe({ recipeCollectionId, name: recipeName });
+    setRecipeName("");
+  };
+
+  return (
+    <>
+      <TextField.Input
+        value={recipeName}
+        onChange={({ target: { value } }) => {
+          setRecipeName(value);
+        }}
+      />
+      <Button
+        onClick={() => {
+          createRecipeAction(recipeCollectionId);
+        }}
+      >
+        Create recipe
+      </Button>
+    </>
+  );
+};
 
 export default function Home() {
   const { isLoaded: userIsLoaded } = useUser();
@@ -39,10 +77,25 @@ export default function Home() {
           setNewRecipeCollectionName(value);
         }}
       />
-      <Button onClick={create}>Create</Button>
-      {recipeCollectionsData.recipeCollections.map((recipeCollection) => {
-        return <div key={recipeCollection.id}>{recipeCollection.name}</div>;
-      })}
+      <Button onClick={create}>Create recipe collection</Button>
+      <Box>
+        {recipeCollectionsData.recipeCollections.map((recipeCollection) => (
+          <Box key={recipeCollection.id}>
+            {recipeCollection.name}
+            <Box pl="4">
+              {recipeCollection.recipes.map((recipe) => (
+                <Box key={recipe.id}>{recipe.name}</Box>
+              ))}
+              <CreateRecipeForm
+                recipeCollectionId={recipeCollection.id}
+                refetch={() => {
+                  void refetch();
+                }}
+              />
+            </Box>
+          </Box>
+        ))}
+      </Box>
     </Page>
   );
 }
