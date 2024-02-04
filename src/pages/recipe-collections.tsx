@@ -23,7 +23,12 @@ export default function RecipeCollectionsPage() {
 
         {recipeCollectionData.recipeCollections.map((recipeCollection) => (
           <Card key={recipeCollection.id}>
-            <Text weight="bold">{recipeCollection.name}</Text>
+            <Flex direction="column" gap="2">
+              <Text weight="bold">{recipeCollection.name}</Text>
+              <Text color="gray" size="2">
+                {recipeCollection.description}
+              </Text>
+            </Flex>
           </Card>
         ))}
       </Flex>
