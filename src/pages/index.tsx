@@ -70,30 +70,32 @@ export default function Home() {
 
   return (
     <Page>
-      <TextField.Input
-        value={newRecipeCollectionName}
-        onChange={({ target: { value } }) => {
-          setNewRecipeCollectionName(value);
-        }}
-      />
-      <Button onClick={create}>Create recipe collection</Button>
-      <Box>
-        {recipeCollectionsData.recipeCollections.map((recipeCollection) => (
-          <Box key={recipeCollection.id}>
-            {recipeCollection.name}
-            <Box pl="4">
-              {recipeCollection.recipes.map((recipe) => (
-                <Box key={recipe.id}>{recipe.name}</Box>
-              ))}
-              <CreateRecipeForm
-                recipeCollectionId={recipeCollection.id}
-                refetch={() => {
-                  void refetch();
-                }}
-              />
+      <Box p="4">
+        <TextField.Input
+          value={newRecipeCollectionName}
+          onChange={({ target: { value } }) => {
+            setNewRecipeCollectionName(value);
+          }}
+        />
+        <Button onClick={create}>Create recipe collection</Button>
+        <Box>
+          {recipeCollectionsData.recipeCollections.map((recipeCollection) => (
+            <Box key={recipeCollection.id}>
+              {recipeCollection.name}
+              <Box pl="4">
+                {recipeCollection.recipes.map((recipe) => (
+                  <Box key={recipe.id}>{recipe.name}</Box>
+                ))}
+                <CreateRecipeForm
+                  recipeCollectionId={recipeCollection.id}
+                  refetch={() => {
+                    void refetch();
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))}
+        </Box>
       </Box>
     </Page>
   );
