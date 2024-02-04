@@ -17,7 +17,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       {...pageProps}
       {...(isDarkMode ? { appearance: { baseTheme: dark } } : {})}
     >
-      <Theme appearance={isDarkMode ? "dark" : "light"}>
+      <Theme
+        appearance={isDarkMode ? "dark" : "light"}
+        accentColor="jade"
+        grayColor="sage"
+      >
         <Head>
           <title>My Utils</title>
           <meta name="description" content="App containing useful utils" />
