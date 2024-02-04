@@ -12,7 +12,7 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { db } from "~/server/db";
-import { isAdmin } from "~/utils/isAdmin";
+import { isAdmin } from "~/utils/is-admin";
 import { log } from "./utils/log";
 import { safeGetUser } from "./utils/users";
 

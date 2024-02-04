@@ -1,31 +1,48 @@
 import { UserButton, useUser } from "@clerk/nextjs";
-import { Flex, Text, Button } from "@radix-ui/themes";
+import { Button, TextField } from "@radix-ui/themes";
+import { useState } from "react";
 import { Page } from "~/components/Page";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const { data, isLoading } = api.recipe.getAll.useQuery();
-  const { isLoaded } = useUser();
+  const { isLoaded: userIsLoaded } = useUser();
 
-  if (!isLoaded || isLoading || data === undefined)
-    return <div>Loading...</div>;
+  const {
+    data: recipeCollectionsData,
+    isLoading: isLoadingRecipeCollections,
+    refetch,
+  } = api.recipeCollection.getAll.useQuery();
+
+  const [newRecipeCollectionName, setNewRecipeCollectionName] = useState("");
+
+  const { mutate } = api.recipeCollection.create.useMutation({
+    onSuccess: () => {
+      void refetch();
+    },
+  });
+
+  const create = () => {
+    mutate({ name: newRecipeCollectionName });
+    setNewRecipeCollectionName("");
+  };
+
+  if (!userIsLoaded || isLoadingRecipeCollections) return <div>Loading...</div>;
+
+  if (recipeCollectionsData === undefined) return <div>Error!</div>;
 
   return (
     <Page>
       <UserButton afterSignOutUrl="/" />
-      {data.recipes.map((recipe) => {
-        console.log(typeof recipe.name);
-        return (
-          <div key={recipe.id}>
-            {recipe.name} - {recipe.body}
-          </div>
-        );
+      <TextField.Input
+        value={newRecipeCollectionName}
+        onChange={({ target: { value } }) => {
+          setNewRecipeCollectionName(value);
+        }}
+      />
+      <Button onClick={create}>Create</Button>
+      {recipeCollectionsData.recipeCollections.map((recipeCollection) => {
+        return <div key={recipeCollection.id}>{recipeCollection.name}</div>;
       })}
-      <Flex direction="column" gap="2">
-        <Text>Hello from Radix Themes :)</Text>
-        <Button>{"Let's go"}</Button>
-      </Flex>
-      <a href="https://www.google.com">test</a>
     </Page>
   );
 }
