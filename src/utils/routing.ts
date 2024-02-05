@@ -1,2 +1,2 @@
 export const HOME_ROUTE = "/";
-export const RECIPE_COLLECTIONS_ROUTE = "/recipe-collections";
+export const RECIPE_COLLECTIONS_ROUTE = "/recipe-books";

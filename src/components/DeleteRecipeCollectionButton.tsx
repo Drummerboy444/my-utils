@@ -22,13 +22,13 @@ export const DeleteRecipeCollectionButton = ({
           }
 
           case "NO_RECIPE_COLLECTION_FOUND": {
-            toast.error("This recipe collection does not exist...");
+            toast.error("This recipe book does not exist...");
             return;
           }
 
           case "ACCESS_DENIED": {
             toast.error(
-              "You do not have permission to delete this recipe collection"
+              "You do not have permission to delete this recipe book"
             );
             return;
           }
@@ -52,7 +52,7 @@ export const DeleteRecipeCollectionButton = ({
       </Dialog.Trigger>
 
       <Dialog.Content style={{ maxWidth: 450 }}>
-        <Dialog.Title>Delete Recipe Collection</Dialog.Title>
+        <Dialog.Title>Delete Recipe Book</Dialog.Title>
 
         <Dialog.Description mb="3">
           This action cannot be undone.

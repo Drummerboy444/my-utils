@@ -31,7 +31,7 @@ export const Header = ({
                 ? { color: "accent" }
                 : {})}
             >
-              Recipe collections
+              Recipe Books
             </Text>
           </Link>
         </Flex>

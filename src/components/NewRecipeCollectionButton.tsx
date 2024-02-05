@@ -24,7 +24,7 @@ export const NewRecipeCollectionButton = ({
           }
 
           case "RECIPE_COLLECTION_ALREADY_EXISTS": {
-            toast.error("This recipe collection already exists");
+            toast.error("This recipe book already exists");
             return;
           }
 
@@ -53,7 +53,7 @@ export const NewRecipeCollectionButton = ({
       </Dialog.Trigger>
 
       <Dialog.Content style={{ maxWidth: 450 }}>
-        <Dialog.Title>New Recipe Collection</Dialog.Title>
+        <Dialog.Title>New Recipe Book</Dialog.Title>
 
         <Flex direction="column" gap="5">
           <Box>
