@@ -1,4 +1,4 @@
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { Box, Card, Flex, IconButton, Text } from "@radix-ui/themes";
 import toast from "react-hot-toast";
 import { NewRecipeCollectionButton } from "~/components/NewRecipeCollectionButton";
@@ -66,9 +66,6 @@ export default function RecipeCollectionsPage() {
                 </Text>
               </Flex>
 
-              <IconButton variant="ghost">
-                <Pencil1Icon />
-              </IconButton>
               <IconButton
                 color="red"
                 variant="ghost"
