@@ -6,7 +6,6 @@ export const recipeCollectionRouter = createTRPCRouter({
   getAll: privateProcedure.query(async ({ ctx: { db, userId } }) => {
     const recipeCollections = await db.recipeCollection.findMany({
       where: { ownerId: userId },
-      include: { recipes: true },
     });
     return { recipeCollections };
   }),
