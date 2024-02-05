@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { AvatarIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import {
   Box,
   Flex,
@@ -53,7 +53,21 @@ export const Header = ({
         />
         <MoonIcon />
 
-        <UserButton afterSignOutUrl="/" />
+        {/*
+          The user button doesn't render anything until the user has loaded.
+          So, this is a workaround to ensure that the header always has a
+          consistent height and doesn't flicker when the user button loads.
+        */}
+        <AvatarIcon width="32" height="32" />
+        <div
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 16,
+          }}
+        >
+          <UserButton afterSignOutUrl="/" />
+        </div>
       </Flex>
 
       <Separator size="4" />
