@@ -30,6 +30,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             ...(isDarkMode
               ? { style: { background: "#333", color: "#fff" } }
               : {}),
+            duration: 5_000,
           }}
         />
         <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />

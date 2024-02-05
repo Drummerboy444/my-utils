@@ -1,81 +1,92 @@
 import { TrashIcon } from "@radix-ui/react-icons";
-import { Button, Dialog, Flex, IconButton } from "@radix-ui/themes";
+import { AlertDialog, Button, Flex, IconButton } from "@radix-ui/themes";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { absurd } from "~/utils/absurd";
 import { api } from "~/utils/api";
+import { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";
 
 export const DeleteRecipeCollectionButton = ({
   recipeCollectionId,
   refetch,
 }: {
   recipeCollectionId: string;
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }) => {
-  const { mutate: deleteRecipeCollection } =
-    api.recipeCollection.delete.useMutation({
-      onSuccess: ({ type }) => {
-        switch (type) {
-          case "SUCCESS": {
-            toast.success("Success!");
-            refetch();
-            return;
-          }
+  const [open, setOpen] = useState(false);
 
-          case "NO_RECIPE_COLLECTION_FOUND": {
-            toast.error("This recipe book does not exist...");
-            return;
-          }
-
-          case "ACCESS_DENIED": {
-            toast.error(
-              "You do not have permission to delete this recipe book"
-            );
-            return;
-          }
-
-          default: {
-            absurd(type);
-          }
+  const {
+    mutate: deleteRecipeCollection,
+    isLoading: isDeletingRecipeCollection,
+  } = api.recipeCollection.delete.useMutation({
+    onSuccess: async ({ type }) => {
+      switch (type) {
+        case "SUCCESS": {
+          await refetch();
+          setOpen(false);
+          toast.success("Successfully deleted recipe book");
+          return;
         }
-      },
-      onError: () => {
-        toast.error("Something went wrong, please try again later...");
-      },
-    });
+
+        case "NO_RECIPE_COLLECTION_FOUND": {
+          toast.error("This recipe book does not exist");
+          return;
+        }
+
+        case "ACCESS_DENIED": {
+          toast.error("You do not have permission to delete this recipe book");
+          return;
+        }
+
+        default: {
+          absurd(type);
+        }
+      }
+    },
+    onError: () => {
+      toast.error(
+        "Something went wrong while deleting this recipe book, please try again later..."
+      );
+    },
+  });
 
   return (
-    <Dialog.Root>
-      <Dialog.Trigger>
+    <AlertDialog.Root open={open} onOpenChange={setOpen}>
+      <AlertDialog.Trigger>
         <IconButton color="red" variant="ghost">
           <TrashIcon />
         </IconButton>
-      </Dialog.Trigger>
+      </AlertDialog.Trigger>
 
-      <Dialog.Content style={{ maxWidth: 450 }}>
-        <Dialog.Title>Delete Recipe Book</Dialog.Title>
+      <AlertDialog.Content style={{ maxWidth: 450 }}>
+        <AlertDialog.Title>Delete Recipe Book</AlertDialog.Title>
 
-        <Dialog.Description mb="3">
+        <AlertDialog.Description mb="3">
           This action cannot be undone.
-        </Dialog.Description>
+        </AlertDialog.Description>
 
-        <Flex gap="3" justify="end">
-          <Dialog.Close>
-            <Button variant="soft" color="gray">
+        <Flex gap="3" justify="end" align="center">
+          {isDeletingRecipeCollection && <LoadingSpinner />}
+          <AlertDialog.Cancel>
+            <Button
+              variant="soft"
+              color="gray"
+              disabled={isDeletingRecipeCollection}
+            >
               Cancel
             </Button>
-          </Dialog.Close>
-          <Dialog.Close>
-            <Button
-              color="red"
-              onClick={() => {
-                deleteRecipeCollection({ recipeCollectionId });
-              }}
-            >
-              Delete
-            </Button>
-          </Dialog.Close>
+          </AlertDialog.Cancel>
+          <Button
+            color="red"
+            onClick={() => {
+              deleteRecipeCollection({ recipeCollectionId });
+            }}
+            disabled={isDeletingRecipeCollection}
+          >
+            Delete
+          </Button>
         </Flex>
-      </Dialog.Content>
-    </Dialog.Root>
+      </AlertDialog.Content>
+    </AlertDialog.Root>
   );
 };

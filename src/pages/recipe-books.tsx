@@ -35,7 +35,9 @@ export default function RecipeCollectionsPage() {
 
               <DeleteRecipeCollectionButton
                 recipeCollectionId={recipeCollection.id}
-                refetch={refetchRecipeCollections}
+                refetch={async () => {
+                  await refetchRecipeCollections();
+                }}
               />
             </Flex>
           </Card>
