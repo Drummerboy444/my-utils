@@ -3,8 +3,8 @@ import { type PropsWithChildren } from "react";
 
 export const Page = ({ children }: PropsWithChildren) => (
   <main>
-    <Section size={{ initial: "1", sm: "2" }}>
-      <Container size="2">{children}</Container>
+    <Section size={{ initial: "1", sm: "2", lg: "3" }}>
+      <Container size="3">{children}</Container>
     </Section>
   </main>
 );

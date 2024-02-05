@@ -42,10 +42,20 @@ export default function AdminPage() {
   return (
     <Page>
       {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
-      <Grid columns={{ initial: "1", sm: "2" }} px="4" gap="4">
-        {Object.entries(statisticsData).map(([name, value]) => (
-          <AdminCard key={name} name={name} value={value.toString()} />
-        ))}
+      <Grid columns={{ initial: "1", sm: "2", lg: "3" }} px="4" gap="4">
+        <AdminCard name="Users" value={statisticsData.usersCount.toString()} />
+        <AdminCard
+          name="Recipe collections"
+          value={statisticsData.recipeCollectionsCount.toString()}
+        />
+        <AdminCard
+          name="Recipes"
+          value={statisticsData.recipesCount.toString()}
+        />
+        <AdminCard
+          name="Ingredients"
+          value={statisticsData.ingredientsCount.toString()}
+        />
       </Grid>
     </Page>
   );
