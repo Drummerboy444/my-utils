@@ -1,6 +1,7 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
 import { NewRecipeCollectionButton } from "~/components/NewRecipeCollectionButton";
+import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
 import { api } from "~/utils/api";
@@ -14,7 +15,10 @@ export default function RecipeCollectionsPage() {
 
   if (isLoadingRecipeCollections) return <LoadingPage />;
 
-  if (recipeCollectionData === undefined) return <div>Error</div>;
+  if (recipeCollectionData === undefined)
+    return (
+      <ErrorPage message="We couldn't find your recipe collections, please try again later" />
+    );
 
   return (
     <Page>

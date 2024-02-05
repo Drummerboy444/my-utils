@@ -45,7 +45,7 @@ export const DeleteRecipeCollectionButton = ({
     },
     onError: () => {
       toast.error(
-        "Something went wrong while deleting this recipe book, please try again later..."
+        "Something went wrong while deleting this recipe book, please try again later"
       );
     },
   });
