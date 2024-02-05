@@ -1,9 +1,7 @@
-import { TrashIcon } from "@radix-ui/react-icons";
-import { Box, Card, Flex, IconButton, Text } from "@radix-ui/themes";
-import toast from "react-hot-toast";
+import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
 import { NewRecipeCollectionButton } from "~/components/NewRecipeCollectionButton";
 import { Page } from "~/components/Page";
-import { absurd } from "~/utils/absurd";
 import { api } from "~/utils/api";
 
 export default function RecipeCollectionsPage() {
@@ -12,38 +10,6 @@ export default function RecipeCollectionsPage() {
     isLoading: isLoadingRecipeCollections,
     refetch: refetchRecipeCollections,
   } = api.recipeCollection.getAll.useQuery();
-
-  const { mutate: deleteRecipeCollection } =
-    api.recipeCollection.delete.useMutation({
-      onSuccess: ({ type }) => {
-        switch (type) {
-          case "SUCCESS": {
-            toast.success("Success!");
-            void refetchRecipeCollections();
-            return;
-          }
-
-          case "NO_RECIPE_COLLECTION_FOUND": {
-            toast.error("This recipe collection does not exist...");
-            return;
-          }
-
-          case "ACCESS_DENIED": {
-            toast.error(
-              "You do not have permission to delete this recipe collection"
-            );
-            return;
-          }
-
-          default: {
-            absurd(type);
-          }
-        }
-      },
-      onError: () => {
-        toast.error("Something went wrong, please try again later...");
-      },
-    });
 
   if (isLoadingRecipeCollections) return <div>Loading...</div>;
 
@@ -66,17 +32,10 @@ export default function RecipeCollectionsPage() {
                 </Text>
               </Flex>
 
-              <IconButton
-                color="red"
-                variant="ghost"
-                onClick={() => {
-                  deleteRecipeCollection({
-                    recipeCollectionId: recipeCollection.id,
-                  });
-                }}
-              >
-                <TrashIcon />
-              </IconButton>
+              <DeleteRecipeCollectionButton
+                recipeCollectionId={recipeCollection.id}
+                refetch={refetchRecipeCollections}
+              />
             </Flex>
           </Card>
         ))}
