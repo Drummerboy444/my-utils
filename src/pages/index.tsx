@@ -1,5 +1,5 @@
 import { Text } from "@radix-ui/themes";
-import { Page } from "~/components/Page";
+import { Page } from "~/components/Pages/Page";
 
 export default function HomePage() {
   return (

@@ -1,6 +1,6 @@
 import { Flex } from "@radix-ui/themes";
 import { Page } from "./Page";
-import { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";
+import { LoadingSpinner } from "../LoadingSpinner/LoadingSpinner";
 
 export const LoadingPage = () => {
   return (

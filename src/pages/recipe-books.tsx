@@ -1,8 +1,8 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
-import { LoadingPage } from "~/components/LoadingPage";
 import { NewRecipeCollectionButton } from "~/components/NewRecipeCollectionButton";
-import { Page } from "~/components/Page";
+import { LoadingPage } from "~/components/Pages/LoadingPage";
+import { Page } from "~/components/Pages/Page";
 import { api } from "~/utils/api";
 
 export default function RecipeCollectionsPage() {
