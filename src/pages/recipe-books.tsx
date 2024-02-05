@@ -17,7 +17,7 @@ export default function RecipeCollectionsPage() {
 
   if (recipeCollectionData === undefined)
     return (
-      <ErrorPage message="We couldn't find your recipe collections, please try again later" />
+      <ErrorPage message="We couldn't find your recipe books, please try again later" />
     );
 
   return (
