@@ -1,5 +1,11 @@
-import { UserButton } from "@clerk/nextjs";
-import { AvatarIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { UserButton, useUser } from "@clerk/nextjs";
+import {
+  AvatarIcon,
+  LockClosedIcon,
+  LockOpen1Icon,
+  MoonIcon,
+  SunIcon,
+} from "@radix-ui/react-icons";
 import {
   Box,
   Flex,
@@ -10,7 +16,12 @@ import {
 } from "@radix-ui/themes";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { HOME_ROUTE, RECIPE_COLLECTIONS_ROUTE } from "~/utils/routing";
+import { isAdmin } from "~/utils/is-admin";
+import {
+  ADMIN_ROUTE,
+  HOME_ROUTE,
+  RECIPE_COLLECTIONS_ROUTE,
+} from "~/utils/routing";
 
 export const Header = ({
   isDarkMode,
@@ -21,6 +32,9 @@ export const Header = ({
 }) => {
   const { route } = useRouter();
   const accentColor = useThemeContext().accentColor;
+  const { user } = useUser();
+  const userIsAdmin =
+    user !== null && user !== undefined && isAdmin(user.publicMetadata);
 
   return (
     <>
@@ -44,14 +58,33 @@ export const Header = ({
 
         <Box grow="1"></Box>
 
-        <SunIcon />
+        {userIsAdmin && (
+          <Link href={ADMIN_ROUTE}>
+            <Text
+              {...(route === ADMIN_ROUTE ? { color: accentColor } : {})}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              {route === ADMIN_ROUTE ? <LockOpen1Icon /> : <LockClosedIcon />}
+            </Text>
+          </Link>
+        )}
+
+        <SunIcon
+          onClick={() => {
+            setIsDarkMode(false);
+          }}
+        />
         <Switch
           checked={isDarkMode}
           onCheckedChange={() => {
             setIsDarkMode(!isDarkMode);
           }}
         />
-        <MoonIcon />
+        <MoonIcon
+          onClick={() => {
+            setIsDarkMode(true);
+          }}
+        />
 
         {/*
           The user button doesn't render anything until the user has loaded.
