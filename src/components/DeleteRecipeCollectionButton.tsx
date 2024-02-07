@@ -1,5 +1,11 @@
-import { TrashIcon } from "@radix-ui/react-icons";
-import { AlertDialog, Button, Flex, IconButton } from "@radix-ui/themes";
+import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
+import {
+  AlertDialog,
+  Button,
+  Callout,
+  Flex,
+  IconButton,
+} from "@radix-ui/themes";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { absurd } from "~/utils/absurd";
@@ -14,6 +20,7 @@ export const DeleteRecipeCollectionButton = ({
   refetch: () => Promise<void>;
 }) => {
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   const {
     mutate: deleteRecipeCollection,
@@ -29,11 +36,13 @@ export const DeleteRecipeCollectionButton = ({
         }
 
         case "NO_RECIPE_COLLECTION_FOUND": {
+          setOpen(false);
           toast.error("This recipe book does not exist");
           return;
         }
 
         case "ACCESS_DENIED": {
+          setOpen(false);
           toast.error("You do not have permission to delete this recipe book");
           return;
         }
@@ -44,14 +53,20 @@ export const DeleteRecipeCollectionButton = ({
       }
     },
     onError: () => {
-      toast.error(
+      setErrorMessage(
         "Something went wrong while deleting this recipe book, please try again later"
       );
     },
   });
 
   return (
-    <AlertDialog.Root open={open} onOpenChange={setOpen}>
+    <AlertDialog.Root
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        setErrorMessage(undefined);
+      }}
+    >
       <AlertDialog.Trigger>
         <IconButton color="red" variant="ghost">
           <TrashIcon />
@@ -61,30 +76,41 @@ export const DeleteRecipeCollectionButton = ({
       <AlertDialog.Content style={{ maxWidth: 450 }}>
         <AlertDialog.Title>Delete Recipe Book</AlertDialog.Title>
 
-        <AlertDialog.Description mb="3">
-          This action cannot be undone.
-        </AlertDialog.Description>
+        <Flex gap="3" direction="column">
+          <AlertDialog.Description>
+            This action cannot be undone.
+          </AlertDialog.Description>
 
-        <Flex gap="3" justify="end" align="center">
-          {isDeletingRecipeCollection && <LoadingSpinner />}
-          <AlertDialog.Cancel>
+          {errorMessage !== undefined && (
+            <Callout.Root color="red">
+              <Callout.Icon>
+                <ExclamationTriangleIcon />
+              </Callout.Icon>
+              <Callout.Text>{errorMessage}</Callout.Text>
+            </Callout.Root>
+          )}
+
+          <Flex gap="3" justify="end" align="center">
+            {isDeletingRecipeCollection && <LoadingSpinner />}
+            <AlertDialog.Cancel>
+              <Button
+                variant="soft"
+                color="gray"
+                disabled={isDeletingRecipeCollection}
+              >
+                Cancel
+              </Button>
+            </AlertDialog.Cancel>
             <Button
-              variant="soft"
-              color="gray"
+              color="red"
+              onClick={() => {
+                deleteRecipeCollection({ recipeCollectionId });
+              }}
               disabled={isDeletingRecipeCollection}
             >
-              Cancel
+              Delete
             </Button>
-          </AlertDialog.Cancel>
-          <Button
-            color="red"
-            onClick={() => {
-              deleteRecipeCollection({ recipeCollectionId });
-            }}
-            disabled={isDeletingRecipeCollection}
-          >
-            Delete
-          </Button>
+          </Flex>
         </Flex>
       </AlertDialog.Content>
     </AlertDialog.Root>
