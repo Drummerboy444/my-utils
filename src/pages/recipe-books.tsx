@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
-import { NewRecipeCollectionButton } from "~/components/NewRecipeCollectionButton";
+import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionButton";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
@@ -24,7 +24,7 @@ export default function RecipeCollectionsPage() {
     <Page>
       <Flex gap="4" direction="column" px="4">
         <Box>
-          <NewRecipeCollectionButton refetch={refetchRecipeCollections} />
+          <CreateRecipeCollectionButton refetch={refetchRecipeCollections} />
         </Box>
 
         {recipeCollectionData.recipeCollections.map((recipeCollection) => (

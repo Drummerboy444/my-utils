@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { absurd } from "~/utils/absurd";
 import { api } from "~/utils/api";
 
-export const NewRecipeCollectionButton = ({
+export const CreateRecipeCollectionButton = ({
   refetch,
 }: {
   refetch: () => void;
