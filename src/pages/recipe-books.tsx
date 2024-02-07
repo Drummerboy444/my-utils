@@ -22,7 +22,7 @@ export default function RecipeCollectionsPage() {
 
   return (
     <Page>
-      <Flex gap="4" direction="column" px="4">
+      <Flex gap="4" direction="column">
         <Box>
           <CreateRecipeCollectionButton refetch={refetchRecipeCollections} />
         </Box>

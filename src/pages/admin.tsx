@@ -42,7 +42,7 @@ export default function AdminPage() {
   return (
     <Page>
       {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
-      <Grid columns={{ initial: "1", sm: "2", lg: "3" }} px="4" gap="4">
+      <Grid columns={{ initial: "1", sm: "2", lg: "3" }} gap="4">
         <AdminCard name="Users" value={statisticsData.usersCount.toString()} />
         <AdminCard
           name="Recipe collections"

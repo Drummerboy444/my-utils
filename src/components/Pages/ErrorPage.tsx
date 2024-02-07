@@ -5,7 +5,7 @@ import { Page } from "./Page";
 export const ErrorPage = ({ message }: { message: string }) => {
   return (
     <Page>
-      <Flex justify="center" px="4">
+      <Flex justify="center">
         <Callout.Root color="red">
           <Callout.Icon>
             <ExclamationTriangleIcon />
