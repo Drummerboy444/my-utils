@@ -22,7 +22,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <Head>
           <title>My Utils</title>
           <meta name="description" content="App containing useful utils" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/test.svg" />
         </Head>
         <Toaster
           position="bottom-center"
