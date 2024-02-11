@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
 import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionButton";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
@@ -22,15 +22,16 @@ export default function RecipeCollectionsPage() {
 
   return (
     <Page>
-      <Flex gap="4" direction="column">
-        <Box>
-          <CreateRecipeCollectionButton
-            refetch={async () => {
-              await refetchRecipeCollections();
-            }}
-          />
-        </Box>
+      <Box pb="2">
+        <CreateRecipeCollectionButton
+          refetch={async () => {
+            await refetchRecipeCollections();
+          }}
+        />
+      </Box>
 
+      {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
+      <Grid gap="4" columns={{ initial: "1", sm: "2", lg: "3" }}>
         {recipeCollectionData.recipeCollections.map((recipeCollection) => (
           <Card key={recipeCollection.id}>
             <Flex gap="2">
@@ -50,7 +51,7 @@ export default function RecipeCollectionsPage() {
             </Flex>
           </Card>
         ))}
-      </Flex>
+      </Grid>
     </Page>
   );
 }
