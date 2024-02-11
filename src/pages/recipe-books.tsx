@@ -24,7 +24,11 @@ export default function RecipeCollectionsPage() {
     <Page>
       <Flex gap="4" direction="column">
         <Box>
-          <CreateRecipeCollectionButton refetch={refetchRecipeCollections} />
+          <CreateRecipeCollectionButton
+            refetch={async () => {
+              await refetchRecipeCollections();
+            }}
+          />
         </Box>
 
         {recipeCollectionData.recipeCollections.map((recipeCollection) => (

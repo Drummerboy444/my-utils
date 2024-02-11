@@ -104,6 +104,7 @@ export const DeleteRecipeCollectionButton = ({
             <Button
               color="red"
               onClick={() => {
+                setErrorMessage(undefined);
                 deleteRecipeCollection({ recipeCollectionId });
               }}
               disabled={isDeletingRecipeCollection}

@@ -1,54 +1,75 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Box, Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
+import { ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  Box,
+  Button,
+  Callout,
+  Dialog,
+  Flex,
+  Text,
+  TextField,
+} from "@radix-ui/themes";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { absurd } from "~/utils/absurd";
 import { api } from "~/utils/api";
+import { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";
 
 export const CreateRecipeCollectionButton = ({
   refetch,
 }: {
-  refetch: () => void;
+  refetch: () => Promise<void>;
 }) => {
+  const [open, setOpen] = useState(false);
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const { mutate: createRecipeCollection } =
-    api.recipeCollection.create.useMutation({
-      onSuccess: ({ type }) => {
-        switch (type) {
-          case "SUCCESS": {
-            toast.success("Success!");
-            refetch();
-            return;
-          }
+  const [errorMessage, setErrorMessage] = useState<string>();
 
-          case "RECIPE_COLLECTION_ALREADY_EXISTS": {
-            toast.error("This recipe book already exists");
-            return;
-          }
-
-          default: {
-            absurd(type);
-          }
+  const {
+    mutate: createRecipeCollection,
+    isLoading: isCreatingRecipeCollection,
+  } = api.recipeCollection.create.useMutation({
+    onSuccess: async ({ type }) => {
+      switch (type) {
+        case "SUCCESS": {
+          await refetch();
+          setOpen(false);
+          toast.success("Successfully created recipe book");
+          return;
         }
-      },
-      onError: () => {
-        toast.error("Something went wrong, please try again later...");
-      },
-    });
+
+        case "RECIPE_COLLECTION_ALREADY_EXISTS": {
+          setErrorMessage("A recipe book with this name already exists");
+          return;
+        }
+
+        default: {
+          absurd(type);
+        }
+      }
+    },
+    onError: () => {
+      setErrorMessage(
+        "Something went wrong while creating this recipe book, please try again later"
+      );
+    },
+  });
 
   return (
     <Dialog.Root
-      onOpenChange={() => {
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
         setName("");
         setDescription("");
+        setErrorMessage(undefined);
       }}
     >
       <Dialog.Trigger>
         <Button>
           <PlusIcon />
-          New
+          New recipe book
         </Button>
       </Dialog.Trigger>
 
@@ -75,21 +96,35 @@ export const CreateRecipeCollectionButton = ({
             />
           </Box>
 
-          <Flex gap="3" justify="end">
+          {errorMessage !== undefined && (
+            <Callout.Root color="red">
+              <Callout.Icon>
+                <ExclamationTriangleIcon />
+              </Callout.Icon>
+              <Callout.Text>{errorMessage}</Callout.Text>
+            </Callout.Root>
+          )}
+
+          <Flex gap="3" justify="end" align="center">
+            {isCreatingRecipeCollection && <LoadingSpinner />}
             <Dialog.Close>
-              <Button variant="soft" color="gray">
+              <Button
+                variant="soft"
+                color="gray"
+                disabled={isCreatingRecipeCollection}
+              >
                 Cancel
               </Button>
             </Dialog.Close>
-            <Dialog.Close>
-              <Button
-                onClick={() => {
-                  createRecipeCollection({ name, description });
-                }}
-              >
-                Create
-              </Button>
-            </Dialog.Close>
+            <Button
+              onClick={() => {
+                setErrorMessage(undefined);
+                createRecipeCollection({ name, description });
+              }}
+              disabled={isCreatingRecipeCollection}
+            >
+              Create
+            </Button>
           </Flex>
         </Flex>
       </Dialog.Content>
