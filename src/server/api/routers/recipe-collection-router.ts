@@ -18,14 +18,21 @@ export const recipeCollectionRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx: { db, userId }, input: { name, description } }) => {
+      const preprocessedName = name.trim();
+      if (preprocessedName === "") return { type: "EMPTY_NAME" as const };
+
+      const preprocessedDescription = description.trim();
+      if (preprocessedDescription === "")
+        return { type: "EMPTY_DESCRIPTION" as const };
+
       try {
         return {
           type: "SUCCESS" as const,
           recipeCollection: await db.recipeCollection.create({
             data: {
               ownerId: userId,
-              name,
-              description,
+              name: preprocessedName,
+              description: preprocessedDescription,
             },
           }),
         };

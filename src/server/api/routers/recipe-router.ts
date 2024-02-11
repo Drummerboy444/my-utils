@@ -16,6 +16,12 @@ export const recipeRouter = createTRPCRouter({
         ctx: { db, userId },
         input: { recipeCollectionId, name, body },
       }) => {
+        const preprocessedName = name.trim();
+        if (preprocessedName === "") return { type: "EMPTY_NAME" as const };
+
+        const preprocessedBody = body.trim();
+        if (preprocessedBody === "") return { type: "EMPTY_BODY" as const };
+
         const recipeCollection = await db.recipeCollection.findUnique({
           where: { id: recipeCollectionId },
           select: { ownerId: true },
@@ -34,8 +40,8 @@ export const recipeRouter = createTRPCRouter({
             recipe: await db.recipe.create({
               data: {
                 recipeCollectionId,
-                name,
-                body,
+                name: preprocessedName,
+                body: preprocessedBody,
               },
             }),
           };

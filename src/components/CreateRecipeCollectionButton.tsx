@@ -44,6 +44,16 @@ export const CreateRecipeCollectionButton = ({
           return;
         }
 
+        case "EMPTY_NAME": {
+          setErrorMessage("Name cannot be empty");
+          return;
+        }
+
+        case "EMPTY_DESCRIPTION": {
+          setErrorMessage("Description cannot be empty");
+          return;
+        }
+
         default: {
           absurd(type);
         }
