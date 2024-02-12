@@ -21,6 +21,9 @@ import {
   ADMIN_ROUTE,
   HOME_ROUTE,
   RECIPE_COLLECTIONS_ROUTE,
+  isAdminRoute,
+  isHomeRoute,
+  isRecipeCollectionsRoute,
 } from "~/utils/routing";
 
 export const Header = ({
@@ -41,13 +44,13 @@ export const Header = ({
       <Flex gap="2" align="center" px="4" py="2">
         <Flex gap="4">
           <Link href={HOME_ROUTE}>
-            <Text {...(route === HOME_ROUTE ? { color: accentColor } : {})}>
+            <Text {...(isHomeRoute(route) ? { color: accentColor } : {})}>
               Home
             </Text>
           </Link>
           <Link href={RECIPE_COLLECTIONS_ROUTE}>
             <Text
-              {...(route === RECIPE_COLLECTIONS_ROUTE
+              {...(isRecipeCollectionsRoute(route)
                 ? { color: accentColor }
                 : {})}
             >
@@ -61,10 +64,10 @@ export const Header = ({
         {userIsAdmin && (
           <Link href={ADMIN_ROUTE}>
             <Text
-              {...(route === ADMIN_ROUTE ? { color: accentColor } : {})}
+              {...(isAdminRoute(route) ? { color: accentColor } : {})}
               style={{ display: "flex", alignItems: "center" }}
             >
-              {route === ADMIN_ROUTE ? <LockOpen1Icon /> : <LockClosedIcon />}
+              {isAdminRoute(route) ? <LockOpen1Icon /> : <LockClosedIcon />}
             </Text>
           </Link>
         )}
