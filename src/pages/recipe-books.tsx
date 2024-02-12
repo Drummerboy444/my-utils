@@ -1,10 +1,13 @@
-import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
-import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { Box, Card, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
+import Link from "next/link";
 import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionButton";
+import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
 import { api } from "~/utils/api";
+import { getRecipeCollectionRoute } from "~/utils/routing";
 
 export default function RecipeCollectionsPage() {
   const {
@@ -34,7 +37,7 @@ export default function RecipeCollectionsPage() {
       <Grid gap="4" columns={{ initial: "1", sm: "2", lg: "3" }}>
         {recipeCollectionData.recipeCollections.map((recipeCollection) => (
           <Card key={recipeCollection.id}>
-            <Flex gap="2">
+            <Flex gap="2" height="100%">
               <Flex grow="1" direction="column" gap="2">
                 <Text weight="bold">{recipeCollection.name}</Text>
                 <Text color="gray" size="2">
@@ -42,12 +45,26 @@ export default function RecipeCollectionsPage() {
                 </Text>
               </Flex>
 
-              <DeleteRecipeCollectionButton
-                recipeCollectionId={recipeCollection.id}
-                refetch={async () => {
-                  await refetchRecipeCollections();
-                }}
-              />
+              <Flex direction="column" justify="between">
+                <DeleteRecipeCollectionButton
+                  recipeCollectionId={recipeCollection.id}
+                  refetch={async () => {
+                    await refetchRecipeCollections();
+                  }}
+                />
+
+                <Link
+                  href={getRecipeCollectionRoute(recipeCollection.id)}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconButton variant="ghost">
+                    <ArrowRightIcon />
+                  </IconButton>
+                </Link>
+              </Flex>
             </Flex>
           </Card>
         ))}
