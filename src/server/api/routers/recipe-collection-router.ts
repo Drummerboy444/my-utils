@@ -10,6 +10,24 @@ export const recipeCollectionRouter = createTRPCRouter({
     return { recipeCollections };
   }),
 
+  get: privateProcedure
+    .input(z.object({ recipeCollectionId: z.string() }))
+    .query(async ({ ctx: { db, userId }, input: { recipeCollectionId } }) => {
+      const recipeCollection = await db.recipeCollection.findUnique({
+        where: { id: recipeCollectionId },
+        include: { recipes: true },
+      });
+
+      if (recipeCollection === null)
+        return { type: "NO_RECIPE_COLLECTION_FOUND" as const };
+
+      const canAccessRecipeCollection = recipeCollection.ownerId === userId;
+
+      if (!canAccessRecipeCollection) return { type: "ACCESS_DENIED" as const };
+
+      return { type: "SUCCESS" as const, recipeCollection };
+    }),
+
   create: privateProcedure
     .input(
       z.object({
