@@ -56,14 +56,20 @@ export default function RecipePage() {
       </Box>
 
       <Flex direction="column" gap="2" pb="6">
-        {recipe.ingredients.map((ingredient) => (
-          <Flex key={ingredient.id} align="center" gap="1">
-            <DotFilledIcon />
-            <Text>
-              {ingredient.quantity} x {ingredient.name}
-            </Text>
-          </Flex>
-        ))}
+        {recipe.ingredients.length > 0 ? (
+          recipe.ingredients.map((ingredient) => (
+            <Flex key={ingredient.id} align="center" gap="1">
+              <DotFilledIcon />
+              <Text>
+                {ingredient.quantity} x {ingredient.name}
+              </Text>
+            </Flex>
+          ))
+        ) : (
+          <Text color="gray" style={{ fontStyle: "italic" }}>
+            This recipe has no ingredients...
+          </Text>
+        )}
       </Flex>
 
       <Box pb="2">
@@ -72,7 +78,13 @@ export default function RecipePage() {
         </Heading>
       </Box>
 
-      <Text>{recipe.method}</Text>
+      {recipe.method === "" ? (
+        <Text color="gray" style={{ fontStyle: "italic" }}>
+          This recipe has no method...
+        </Text>
+      ) : (
+        <Text>{recipe.method}</Text>
+      )}
     </Page>
   );
 }
