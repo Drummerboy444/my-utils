@@ -49,6 +49,7 @@ model Ingredient {
   recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   name String
+  quantity Int
 
   @@unique([name, recipeId])
 
