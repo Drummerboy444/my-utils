@@ -8,19 +8,20 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         recipeCollectionId: z.string(),
         name: z.string(),
-        body: z.string(),
+        description: z.string(),
       })
     )
     .mutation(
       async ({
         ctx: { db, userId },
-        input: { recipeCollectionId, name, body },
+        input: { recipeCollectionId, name, description },
       }) => {
         const preprocessedName = name.trim();
         if (preprocessedName === "") return { type: "EMPTY_NAME" as const };
 
-        const preprocessedBody = body.trim();
-        if (preprocessedBody === "") return { type: "EMPTY_BODY" as const };
+        const preprocessedDescription = description.trim();
+        if (preprocessedDescription === "")
+          return { type: "EMPTY_DESCRIPTION" as const };
 
         const recipeCollection = await db.recipeCollection.findUnique({
           where: { id: recipeCollectionId },
@@ -41,7 +42,8 @@ export const recipeRouter = createTRPCRouter({
               data: {
                 recipeCollectionId,
                 name: preprocessedName,
-                body: preprocessedBody,
+                description: preprocessedDescription,
+                body: "",
               },
             }),
           };
