@@ -1,4 +1,5 @@
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
+import { CreateRecipeButton } from "~/components/CreateRecipeButton";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
@@ -8,17 +9,19 @@ import { api } from "~/utils/api";
 export default function RecipePage() {
   const queryParams = useSafeRecipeCollectionIdQueryParams();
 
-  const { data: recipeCollectionData, isLoading: isLoadingRecipeCollection } =
-    api.recipeCollection.get.useQuery(
-      queryParams !== "LOADING" && queryParams !== "QUERY_PARAMS_UNAVAILABLE"
-        ? queryParams
-        : { recipeCollectionId: "" },
-      {
-        enabled:
-          queryParams !== "LOADING" &&
-          queryParams !== "QUERY_PARAMS_UNAVAILABLE",
-      }
-    );
+  const {
+    data: recipeCollectionData,
+    isLoading: isLoadingRecipeCollection,
+    refetch: refetchRecipeCollection,
+  } = api.recipeCollection.get.useQuery(
+    queryParams !== "LOADING" && queryParams !== "QUERY_PARAMS_UNAVAILABLE"
+      ? queryParams
+      : { recipeCollectionId: "" },
+    {
+      enabled:
+        queryParams !== "LOADING" && queryParams !== "QUERY_PARAMS_UNAVAILABLE",
+    }
+  );
 
   if (isLoadingRecipeCollection) return <LoadingPage />;
 
@@ -44,6 +47,15 @@ export default function RecipePage() {
         <Heading size="5" color="gray">
           {recipeCollection.description}
         </Heading>
+      </Box>
+
+      <Box pb="2">
+        <CreateRecipeButton
+          recipeCollectionId={recipeCollection.id}
+          refetch={async () => {
+            await refetchRecipeCollection();
+          }}
+        />
       </Box>
 
       <Flex direction="column" gap="2">
