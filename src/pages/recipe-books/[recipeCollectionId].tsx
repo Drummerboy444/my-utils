@@ -1,12 +1,22 @@
-import { Box, Flex, Heading, Text } from "@radix-ui/themes";
+import {
+  Box,
+  Flex,
+  Grid,
+  Heading,
+  Separator,
+  Strong,
+  Text,
+} from "@radix-ui/themes";
+import Link from "next/link";
 import { CreateRecipeButton } from "~/components/CreateRecipeButton";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
 import { useSafeRecipeCollectionIdQueryParams } from "~/hooks/use-safe-query-params";
 import { api } from "~/utils/api";
+import { getRecipeRoute } from "~/utils/routing";
 
-export default function RecipePage() {
+export default function RecipeCollectionPage() {
   const queryParams = useSafeRecipeCollectionIdQueryParams();
 
   const {
@@ -49,7 +59,7 @@ export default function RecipePage() {
         </Heading>
       </Box>
 
-      <Box pb="2">
+      <Box pb="6">
         <CreateRecipeButton
           recipeCollectionId={recipeCollection.id}
           refetch={async () => {
@@ -59,9 +69,18 @@ export default function RecipePage() {
       </Box>
 
       <Flex direction="column" gap="2">
-        {recipeCollection.recipes.map((recipe) => (
-          <Text key={recipe.id}>{recipe.name}</Text>
-        ))}
+        {recipeCollection.recipes.map((recipe, i) => [
+          <Link key={recipe.id} href={getRecipeRoute(recipe.id)}>
+            {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
+            <Grid columns="2">
+              <Strong>{recipe.name}</Strong>
+              <Text>{recipe.description}</Text>
+            </Grid>
+          </Link>,
+          ...(i < recipeCollection.recipes.length - 1
+            ? [<Separator key={`${recipe.id}-separator`} size="4" />]
+            : []),
+        ])}
       </Flex>
     </Page>
   );
