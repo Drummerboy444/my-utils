@@ -1,3 +1,5 @@
+import { DotFilledIcon } from "@radix-ui/react-icons";
+import { Box, Flex, Heading, Text } from "@radix-ui/themes";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
@@ -36,5 +38,41 @@ export default function RecipePage() {
 
   const { recipe } = recipeData;
 
-  return <Page>Recipe page: {recipe.name}</Page>;
+  return (
+    <Page>
+      <Box pb="6">
+        <Heading size="9" as="h1">
+          {recipe.name}
+        </Heading>
+        <Heading size="6" color="gray" as="h2">
+          {recipe.description}
+        </Heading>
+      </Box>
+
+      <Box pb="2">
+        <Heading size="7" as="h3">
+          Ingredients
+        </Heading>
+      </Box>
+
+      <Flex direction="column" gap="2" pb="6">
+        {recipe.ingredients.map((ingredient) => (
+          <Flex key={ingredient.id} align="center" gap="1">
+            <DotFilledIcon />
+            <Text>
+              {ingredient.quantity} x {ingredient.name}
+            </Text>
+          </Flex>
+        ))}
+      </Flex>
+
+      <Box pb="2">
+        <Heading size="7" as="h3">
+          Method
+        </Heading>
+      </Box>
+
+      <Text>{recipe.method}</Text>
+    </Page>
+  );
 }

@@ -13,8 +13,8 @@ export const recipeRouter = createTRPCRouter({
       const recipe = await db.recipe.findUnique({
         where: { id: recipeId },
         include: {
-          recipeCollection: { select: { ownerId: true } },
-          ingredients: { select: { name: true, quantity: true } },
+          recipeCollection: true,
+          ingredients: true,
         },
       });
 

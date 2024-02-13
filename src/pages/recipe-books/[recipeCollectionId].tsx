@@ -53,8 +53,10 @@ export default function RecipeCollectionPage() {
   return (
     <Page>
       <Box pb="6">
-        <Heading size="9">{recipeCollection.name}</Heading>
-        <Heading size="5" color="gray">
+        <Heading size="9" as="h1">
+          {recipeCollection.name}
+        </Heading>
+        <Heading size="6" color="gray" as="h2">
           {recipeCollection.description}
         </Heading>
       </Box>
