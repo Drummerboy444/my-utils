@@ -3,6 +3,27 @@ import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
 import { isUniqueConstraintViolation } from "../utils/db-violations";
 
 export const recipeRouter = createTRPCRouter({
+  get: privateProcedure
+    .input(
+      z.object({
+        recipeId: z.string(),
+      })
+    )
+    .query(async ({ ctx: { db, userId }, input: { recipeId } }) => {
+      const recipe = await db.recipe.findUnique({
+        where: { id: recipeId },
+        include: { recipeCollection: { select: { ownerId: true } } },
+      });
+
+      if (recipe === null) return { type: "NO_RECIPE_FOUND" as const };
+
+      const canAccessRecipe = recipe.recipeCollection.ownerId === userId;
+
+      if (!canAccessRecipe) return { type: "ACCESS_DENIED" as const };
+
+      return { type: "SUCCESS" as const, recipe };
+    }),
+
   create: privateProcedure
     .input(
       z.object({

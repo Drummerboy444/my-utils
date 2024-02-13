@@ -22,3 +22,5 @@ const getSafeQueryParamsHook =
 export const useSafeRecipeCollectionIdQueryParams = getSafeQueryParamsHook([
   "recipeCollectionId",
 ]);
+
+export const useSafeRecipeIdQueryParams = getSafeQueryParamsHook(["recipeId"]);
