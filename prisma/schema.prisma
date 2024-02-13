@@ -33,7 +33,7 @@ model Recipe {
   name String
   description String
   ingredients Ingredient[]
-  body String
+  method String
 
   @@unique([name, recipeCollectionId])
 

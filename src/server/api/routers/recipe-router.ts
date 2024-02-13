@@ -12,7 +12,10 @@ export const recipeRouter = createTRPCRouter({
     .query(async ({ ctx: { db, userId }, input: { recipeId } }) => {
       const recipe = await db.recipe.findUnique({
         where: { id: recipeId },
-        include: { recipeCollection: { select: { ownerId: true } } },
+        include: {
+          recipeCollection: { select: { ownerId: true } },
+          ingredients: { select: { name: true, quantity: true } },
+        },
       });
 
       if (recipe === null) return { type: "NO_RECIPE_FOUND" as const };
@@ -64,7 +67,7 @@ export const recipeRouter = createTRPCRouter({
                 recipeCollectionId,
                 name: preprocessedName,
                 description: preprocessedDescription,
-                body: "",
+                method: "",
               },
             }),
           };
