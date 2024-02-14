@@ -1,6 +1,7 @@
 import { Box, Flex, Grid, Separator, Strong, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { CreateRecipeButton } from "~/components/CreateRecipeButton";
+import { EditRecipeCollectionButton } from "~/components/CreateRecipeCollectionForm/EditRecipeCollectionButton";
 import { PageHeading } from "~/components/Headers/PageHeading";
 import { PageSubHeading } from "~/components/Headers/PageSubHeading";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
@@ -47,7 +48,20 @@ export default function RecipeCollectionPage() {
   return (
     <Page>
       <Box pb="6">
-        <PageHeading heading={recipeCollection.name} />
+        <Flex align="center">
+          <Box grow="1">
+            <PageHeading heading={recipeCollection.name} />
+          </Box>
+
+          <EditRecipeCollectionButton
+            recipeCollectionId={recipeCollection.id}
+            defaultValues={recipeCollection}
+            refetch={async () => {
+              await refetchRecipeCollection();
+            }}
+            size="3"
+          />
+        </Flex>
         <PageSubHeading subHeading={recipeCollection.description} />
       </Box>
 

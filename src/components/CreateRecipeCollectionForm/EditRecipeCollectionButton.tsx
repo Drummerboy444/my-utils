@@ -10,14 +10,25 @@ import {
   type RecipeCollectionFormState,
 } from "./RecipeCollectionForm";
 
+type Size = "1" | "2" | "3" | "4";
+
+const ICON_SIZE_LOOKUP: Record<Size, number> = {
+  "1": 15,
+  "2": 18,
+  "3": 22,
+  "4": 27,
+} as const;
+
 export const EditRecipeCollectionButton = ({
   recipeCollectionId,
   defaultValues,
   refetch,
+  size,
 }: {
   recipeCollectionId: string;
   defaultValues: RecipeCollectionFormState;
   refetch: () => Promise<void>;
+  size?: Size;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -81,8 +92,19 @@ export const EditRecipeCollectionButton = ({
       }}
     >
       <Dialog.Trigger>
-        <IconButton color="gold" variant="ghost">
-          <Pencil1Icon />
+        <IconButton
+          color="gold"
+          variant="ghost"
+          {...(size === undefined ? {} : { size })}
+        >
+          <Pencil1Icon
+            {...(size === undefined
+              ? {}
+              : {
+                  width: ICON_SIZE_LOOKUP[size],
+                  height: ICON_SIZE_LOOKUP[size],
+                })}
+          />
         </IconButton>
       </Dialog.Trigger>
 
