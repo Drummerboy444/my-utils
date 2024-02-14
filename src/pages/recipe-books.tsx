@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 import Link from "next/link";
-import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionButton";
+import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionForm/CreateRecipeCollectionButton";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
 import { PageHeading } from "~/components/Headers/PageHeading";
 import { PageSubHeading } from "~/components/Headers/PageSubHeading";

@@ -1,18 +1,14 @@
 import { ExclamationTriangleIcon, PlusIcon } from "@radix-ui/react-icons";
-import {
-  Box,
-  Button,
-  Callout,
-  Dialog,
-  Flex,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
+import { Button, Callout, Dialog, Flex } from "@radix-ui/themes";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { absurd } from "~/utils/absurd";
 import { api } from "~/utils/api";
-import { LoadingSpinner } from "./LoadingSpinner/LoadingSpinner";
+import { LoadingSpinner } from "../LoadingSpinner/LoadingSpinner";
+import {
+  RecipeCollectionForm,
+  type RecipeCollectionFormState,
+} from "./RecipeCollectionForm";
 
 export const CreateRecipeCollectionButton = ({
   refetch,
@@ -21,8 +17,10 @@ export const CreateRecipeCollectionButton = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [formState, setFormState] = useState<RecipeCollectionFormState>({
+    name: "",
+    description: "",
+  });
 
   const [errorMessage, setErrorMessage] = useState<string>();
 
@@ -71,8 +69,7 @@ export const CreateRecipeCollectionButton = ({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        setName("");
-        setDescription("");
+        setFormState({ name: "", description: "" });
         setErrorMessage(undefined);
       }}
     >
@@ -87,24 +84,12 @@ export const CreateRecipeCollectionButton = ({
         <Dialog.Title>New Recipe Book</Dialog.Title>
 
         <Flex direction="column" gap="5">
-          <Box>
-            <Text>Name:</Text>
-            <TextField.Input
-              value={name}
-              onChange={({ target: { value } }) => {
-                setName(value);
-              }}
-            />
-          </Box>
-          <Box>
-            <Text>Description:</Text>
-            <TextField.Input
-              value={description}
-              onChange={({ target: { value } }) => {
-                setDescription(value);
-              }}
-            />
-          </Box>
+          <RecipeCollectionForm
+            formState={formState}
+            onFormStateChange={(formStateChange) => {
+              setFormState({ ...formState, ...formStateChange });
+            }}
+          />
 
           {errorMessage !== undefined && (
             <Callout.Root color="red">
@@ -129,7 +114,7 @@ export const CreateRecipeCollectionButton = ({
             <Button
               onClick={() => {
                 setErrorMessage(undefined);
-                createRecipeCollection({ name, description });
+                createRecipeCollection(formState);
               }}
               disabled={isCreatingRecipeCollection}
             >
