@@ -1,12 +1,4 @@
-import {
-  Box,
-  Flex,
-  Grid,
-  Heading,
-  Separator,
-  Strong,
-  Text,
-} from "@radix-ui/themes";
+import { Box, Flex, Grid, Separator, Strong, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { CreateRecipeButton } from "~/components/CreateRecipeButton";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
@@ -51,16 +43,10 @@ export default function RecipeCollectionPage() {
   const { recipeCollection } = recipeCollectionData;
 
   return (
-    <Page>
-      <Box pb="6">
-        <Heading size="9" as="h1">
-          {recipeCollection.name}
-        </Heading>
-        <Heading size="6" color="gray" as="h2">
-          {recipeCollection.description}
-        </Heading>
-      </Box>
-
+    <Page
+      header={recipeCollection.name}
+      subheader={recipeCollection.description}
+    >
       <Box pb="6">
         <CreateRecipeButton
           recipeCollectionId={recipeCollection.id}

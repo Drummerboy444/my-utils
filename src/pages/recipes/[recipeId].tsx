@@ -39,16 +39,7 @@ export default function RecipePage() {
   const { recipe } = recipeData;
 
   return (
-    <Page>
-      <Box pb="6">
-        <Heading size="9" as="h1">
-          {recipe.name}
-        </Heading>
-        <Heading size="6" color="gray" as="h2">
-          {recipe.description}
-        </Heading>
-      </Box>
-
+    <Page header={recipe.name} subheader={recipe.description}>
       <Box pb="2">
         <Heading size="7" as="h3">
           Ingredients

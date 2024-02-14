@@ -24,7 +24,7 @@ export default function RecipeCollectionsPage() {
     );
 
   return (
-    <Page>
+    <Page header="Recipe books" subheader="The place for all your recipes">
       <Box pb="6">
         <CreateRecipeCollectionButton
           refetch={async () => {

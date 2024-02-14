@@ -54,7 +54,7 @@ export const Header = ({
                 ? { color: accentColor }
                 : {})}
             >
-              Recipe Books
+              Recipe books
             </Text>
           </Link>
         </Flex>
