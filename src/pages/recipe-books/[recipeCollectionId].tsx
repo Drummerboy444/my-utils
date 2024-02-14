@@ -70,20 +70,26 @@ export default function RecipeCollectionPage() {
         />
       </Box>
 
-      <Flex direction="column" gap="2">
-        {recipeCollection.recipes.map((recipe, i) => [
-          <Link key={recipe.id} href={getRecipeRoute(recipe.id)}>
-            {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
-            <Grid columns="2">
-              <Strong>{recipe.name}</Strong>
-              <Text>{recipe.description}</Text>
-            </Grid>
-          </Link>,
-          ...(i < recipeCollection.recipes.length - 1
-            ? [<Separator key={`${recipe.id}-separator`} size="4" />]
-            : []),
-        ])}
-      </Flex>
+      {recipeCollection.recipes.length > 0 ? (
+        <Flex direction="column" gap="2">
+          {recipeCollection.recipes.map((recipe, i) => [
+            <Link key={recipe.id} href={getRecipeRoute(recipe.id)}>
+              {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
+              <Grid columns="2">
+                <Strong>{recipe.name}</Strong>
+                <Text>{recipe.description}</Text>
+              </Grid>
+            </Link>,
+            ...(i < recipeCollection.recipes.length - 1
+              ? [<Separator key={`${recipe.id}-separator`} size="4" />]
+              : []),
+          ])}
+        </Flex>
+      ) : (
+        <Text color="gray" style={{ fontStyle: "italic" }}>
+          This recipe book has no recipes...
+        </Text>
+      )}
     </Page>
   );
 }
