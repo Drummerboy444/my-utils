@@ -24,26 +24,29 @@ const RecipeCollectionCard = ({
 }) => {
   return (
     <Card>
-      <Flex gap="2" height="100%">
-        <Link style={{ flexGrow: 1 }} href={getRecipeCollectionRoute(id)}>
-          <Flex grow="1" direction="column" gap="2">
+      <Flex gap="2" direction="column">
+        <Flex gap="3" align="center">
+          <Link style={{ flexGrow: 1 }} href={getRecipeCollectionRoute(id)}>
             <Text weight="bold">{name}</Text>
-            <Text color="gray" size="2">
-              {description}
-            </Text>
-          </Flex>
+          </Link>
+
+          <EditRecipeCollectionButton
+            recipeCollectionId={id}
+            defaultValues={{ name, description }}
+            refetch={refetch}
+          />
+
+          <DeleteRecipeCollectionButton
+            recipeCollectionId={id}
+            refetch={refetch}
+          />
+        </Flex>
+
+        <Link href={getRecipeCollectionRoute(id)}>
+          <Text color="gray" size="2">
+            {description}
+          </Text>
         </Link>
-
-        <EditRecipeCollectionButton
-          recipeCollectionId={id}
-          defaultValues={{ name, description }}
-          refetch={refetch}
-        />
-
-        <DeleteRecipeCollectionButton
-          recipeCollectionId={id}
-          refetch={refetch}
-        />
       </Flex>
     </Card>
   );

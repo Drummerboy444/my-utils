@@ -124,7 +124,7 @@ export const EditRecipeCollectionButton = ({
               }}
               disabled={isEditingRecipeCollection}
             >
-              Edit
+              Save
             </Button>
           </Flex>
         </Flex>
