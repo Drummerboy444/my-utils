@@ -1,5 +1,4 @@
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { Box, Card, Flex, Grid, IconButton, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionButton";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
@@ -8,6 +7,38 @@ import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
 import { api } from "~/utils/api";
 import { getRecipeCollectionRoute } from "~/utils/routing";
+
+const RecipeCollectionCard = ({
+  id,
+  name,
+  description,
+  refetch,
+}: {
+  id: string;
+  name: string;
+  description: string;
+  refetch: () => Promise<void>;
+}) => {
+  return (
+    <Card>
+      <Flex gap="2" height="100%">
+        <Link style={{ flexGrow: 1 }} href={getRecipeCollectionRoute(id)}>
+          <Flex grow="1" direction="column" gap="2">
+            <Text weight="bold">{name}</Text>
+            <Text color="gray" size="2">
+              {description}
+            </Text>
+          </Flex>
+        </Link>
+
+        <DeleteRecipeCollectionButton
+          recipeCollectionId={id}
+          refetch={refetch}
+        />
+      </Flex>
+    </Card>
+  );
+};
 
 export default function RecipeCollectionsPage() {
   const {
@@ -37,37 +68,15 @@ export default function RecipeCollectionsPage() {
         // @ts-expect-error At the time of writing, the type of columns is coming through as never
         <Grid gap="4" columns={{ initial: "1", sm: "2", lg: "3" }}>
           {recipeCollectionData.recipeCollections.map((recipeCollection) => (
-            <Card key={recipeCollection.id}>
-              <Flex gap="2" height="100%">
-                <Flex grow="1" direction="column" gap="2">
-                  <Text weight="bold">{recipeCollection.name}</Text>
-                  <Text color="gray" size="2">
-                    {recipeCollection.description}
-                  </Text>
-                </Flex>
-
-                <Flex direction="column" justify="between">
-                  <DeleteRecipeCollectionButton
-                    recipeCollectionId={recipeCollection.id}
-                    refetch={async () => {
-                      await refetchRecipeCollections();
-                    }}
-                  />
-
-                  <Link
-                    href={getRecipeCollectionRoute(recipeCollection.id)}
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconButton variant="ghost">
-                      <ArrowRightIcon />
-                    </IconButton>
-                  </Link>
-                </Flex>
-              </Flex>
-            </Card>
+            <RecipeCollectionCard
+              key={recipeCollection.id}
+              id={recipeCollection.id}
+              name={recipeCollection.name}
+              description={recipeCollection.description}
+              refetch={async () => {
+                await refetchRecipeCollections();
+              }}
+            />
           ))}
         </Grid>
       ) : (
