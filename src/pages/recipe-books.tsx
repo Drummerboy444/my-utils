@@ -2,6 +2,8 @@ import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { CreateRecipeCollectionButton } from "~/components/CreateRecipeCollectionButton";
 import { DeleteRecipeCollectionButton } from "~/components/DeleteRecipeCollectionButton";
+import { PageHeading } from "~/components/Headers/PageHeading";
+import { PageSubHeading } from "~/components/Headers/PageSubHeading";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
@@ -55,7 +57,12 @@ export default function RecipeCollectionsPage() {
     );
 
   return (
-    <Page header="Recipe books" subheader="The place for all your recipes">
+    <Page>
+      <Box pb="6">
+        <PageHeading heading="Recipe books" />
+        <PageSubHeading subHeading="The place for all your recipes" />
+      </Box>
+
       <Box pb="6">
         <CreateRecipeCollectionButton
           refetch={async () => {

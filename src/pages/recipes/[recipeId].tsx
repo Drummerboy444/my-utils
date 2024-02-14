@@ -1,5 +1,7 @@
 import { DotFilledIcon } from "@radix-ui/react-icons";
 import { Box, Flex, Heading, Text } from "@radix-ui/themes";
+import { PageHeading } from "~/components/Headers/PageHeading";
+import { PageSubHeading } from "~/components/Headers/PageSubHeading";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
 import { LoadingPage } from "~/components/Pages/LoadingPage";
 import { Page } from "~/components/Pages/Page";
@@ -39,7 +41,12 @@ export default function RecipePage() {
   const { recipe } = recipeData;
 
   return (
-    <Page header={recipe.name} subheader={recipe.description}>
+    <Page>
+      <Box pb="6">
+        <PageHeading heading={recipe.name} />
+        <PageSubHeading subHeading={recipe.description} />
+      </Box>
+
       <Box pb="2">
         <Heading size="7" as="h3">
           Ingredients
