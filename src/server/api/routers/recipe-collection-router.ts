@@ -63,6 +63,51 @@ export const recipeCollectionRouter = createTRPCRouter({
       }
     }),
 
+  edit: privateProcedure
+    .input(
+      z.object({
+        recipeCollectionId: z.string(),
+        name: z.string(),
+        description: z.string(),
+      })
+    )
+    .mutation(
+      async ({
+        ctx: { db, userId },
+        input: { recipeCollectionId, name, description },
+      }) => {
+        const preprocessedName = name.trim();
+        if (preprocessedName === "") return { type: "EMPTY_NAME" as const };
+
+        const preprocessedDescription = description.trim();
+        if (preprocessedDescription === "")
+          return { type: "EMPTY_DESCRIPTION" as const };
+
+        const recipeCollection = await db.recipeCollection.findUnique({
+          where: { id: recipeCollectionId },
+        });
+
+        if (recipeCollection === null) {
+          return { type: "NO_RECIPE_COLLECTION_FOUND" as const };
+        }
+
+        const canEditRecipeCollection = recipeCollection.ownerId === userId;
+
+        if (!canEditRecipeCollection) return { type: "ACCESS_DENIED" as const };
+
+        return {
+          type: "SUCCESS" as const,
+          recipeCollection: await db.recipeCollection.update({
+            where: { id: recipeCollectionId },
+            data: {
+              name: preprocessedName,
+              description: preprocessedDescription,
+            },
+          }),
+        };
+      }
+    ),
+
   delete: privateProcedure
     .input(z.object({ recipeCollectionId: z.string() }))
     .mutation(
@@ -82,7 +127,7 @@ export const recipeCollectionRouter = createTRPCRouter({
 
         return {
           type: "SUCCESS" as const,
-          adventure: await db.recipeCollection.delete({
+          recipeCollection: await db.recipeCollection.delete({
             where: { id: recipeCollectionId },
           }),
         };
