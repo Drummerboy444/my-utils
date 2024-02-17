@@ -2,6 +2,7 @@ import { Box, Flex, Grid, Separator, Strong, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { CreateRecipeButton } from "~/components/CreateRecipeButton";
 import { EditRecipeCollectionButton } from "~/components/CreateRecipeCollectionForm/EditRecipeCollectionButton";
+import { DeleteRecipeButton } from "~/components/DeleteRecipeButton";
 import { PageHeading } from "~/components/Headers/PageHeading";
 import { PageSubHeading } from "~/components/Headers/PageSubHeading";
 import { ErrorPage } from "~/components/Pages/ErrorPage";
@@ -77,13 +78,21 @@ export default function RecipeCollectionPage() {
       {recipeCollection.recipes.length > 0 ? (
         <Flex direction="column" gap="2">
           {recipeCollection.recipes.map((recipe, i) => [
-            <Link key={recipe.id} href={getRecipeRoute(recipe.id)}>
-              {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
-              <Grid columns="2">
-                <Strong>{recipe.name}</Strong>
-                <Text>{recipe.description}</Text>
-              </Grid>
-            </Link>,
+            <Flex key={recipe.id} align="center" gap="2">
+              <Link href={getRecipeRoute(recipe.id)} style={{ flexGrow: 1 }}>
+                {/* @ts-expect-error At the time of writing, the type of columns is coming through as never */}
+                <Grid columns="2" gap="2">
+                  <Strong>{recipe.name}</Strong>
+                  <Text>{recipe.description}</Text>
+                </Grid>
+              </Link>
+              <DeleteRecipeButton
+                recipeId={recipe.id}
+                refetch={async () => {
+                  await refetchRecipeCollection();
+                }}
+              />
+            </Flex>,
             ...(i < recipeCollection.recipes.length - 1
               ? [<Separator key={`${recipe.id}-separator`} size="4" />]
               : []),
