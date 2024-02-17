@@ -80,4 +80,26 @@ export const recipeRouter = createTRPCRouter({
         }
       }
     ),
+
+  delete: privateProcedure
+    .input(z.object({ recipeId: z.string() }))
+    .mutation(async ({ ctx: { db, userId }, input: { recipeId } }) => {
+      const recipe = await db.recipe.findUnique({
+        where: { id: recipeId },
+        include: { recipeCollection: true },
+      });
+
+      if (recipe === null) return { type: "NO_RECIPE_FOUND" as const };
+
+      const canDeleteRecipe = recipe.recipeCollection.ownerId === userId;
+
+      if (!canDeleteRecipe) return { type: "ACCESS_DENIED" as const };
+
+      return {
+        type: "SUCCESS" as const,
+        recipe: await db.recipe.delete({
+          where: { id: recipeId },
+        }),
+      };
+    }),
 });
